@@ -1,0 +1,11 @@
+{
+  "before_tests": "coffee -c .",
+  "src_files": [
+    "*.coffee",
+    "spec/*.coffee"
+  ],
+  "serve_files": [
+    "index.js",
+    "spec/*.js"
+  ]
+}
