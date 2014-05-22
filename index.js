@@ -27,13 +27,13 @@
 
     function WorkerAdapter(func) {
       this.resolveFunctions = {};
-      this.worker = WorkerAdapter.makeWorker("var __func = (" + func + ");\naddEventListener('message', function(e){\n  if(e.data.type === 'run')\n    postMessage({\n      type: 'end',\n      result: __func.apply(null, e.data.arguments),\n      original: e.data\n    });\n}, false);");
+      this.worker = WorkerAdapter.makeWorker("var __func = (" + func + ");\naddEventListener('message', function(e){\n  if(e.data.type === 'run')\n    postMessage({\n      type: 'end',\n      result: __func.apply(null, e.data.arguments),\n      id: e.data.id\n    });\n}, false);");
       this.worker.addEventListener('message', (function(_this) {
         return function(_arg) {
           var data, id, _base;
           data = _arg.data;
           if (data.type === 'end') {
-            id = data.original.id;
+            id = data.id;
             if (typeof (_base = _this.resolveFunctions)[id] === "function") {
               _base[id](data.result);
             }

@@ -21,13 +21,13 @@ class WorkerAdapter
           postMessage({
             type: 'end',
             result: __func.apply(null, e.data.arguments),
-            original: e.data
+            id: e.data.id
           });
       }, false);
     """
     @worker.addEventListener 'message', ({ data }) =>
       if data.type is 'end'
-        id = data.original.id
+        id = data.id
         @resolveFunctions[id]?(data.result)
         delete @resolveFunctions[id]
     , false
