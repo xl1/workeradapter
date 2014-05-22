@@ -27,7 +27,7 @@
 
     function WorkerAdapter(func) {
       this.resolveFunctions = {};
-      this.worker = WorkerAdapter.makeWorker("var result = {};\nvar __func = (" + func + ");\naddEventListener('message', function(e){\n  if(e.data.type === 'run'){\n    __func.apply(null, e.data.arguments);\n    postMessage({ type: 'end', result: result, original: e.data });\n  }\n}, false);");
+      this.worker = WorkerAdapter.makeWorker("var __func = (" + func + ");\naddEventListener('message', function(e){\n  if(e.data.type === 'run')\n    postMessage({\n      type: 'end',\n      result: __func.apply(null, e.data.arguments),\n      original: e.data\n    });\n}, false);");
       this.worker.addEventListener('message', (function(_this) {
         return function(_arg) {
           var data, id, _base;
@@ -35,7 +35,7 @@
           if (data.type === 'end') {
             id = data.original.id;
             if (typeof (_base = _this.resolveFunctions)[id] === "function") {
-              _base[id](data);
+              _base[id](data.result);
             }
             return delete _this.resolveFunctions[id];
           }

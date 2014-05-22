@@ -15,19 +15,20 @@ class WorkerAdapter
   constructor: (func) ->
     @resolveFunctions = {}
     @worker = WorkerAdapter.makeWorker """
-      var result = {};
       var __func = (#{func});
       addEventListener('message', function(e){
-        if(e.data.type === 'run'){
-          __func.apply(null, e.data.arguments);
-          postMessage({ type: 'end', result: result, original: e.data });
-        }
+        if(e.data.type === 'run')
+          postMessage({
+            type: 'end',
+            result: __func.apply(null, e.data.arguments),
+            original: e.data
+          });
       }, false);
     """
     @worker.addEventListener 'message', ({ data }) =>
       if data.type is 'end'
         id = data.original.id
-        @resolveFunctions[id]?(data)
+        @resolveFunctions[id]?(data.result)
         delete @resolveFunctions[id]
     , false
 

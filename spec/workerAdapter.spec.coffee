@@ -4,22 +4,22 @@ describe 'WorkerAdapter', ->
     expect w.worker instanceof Worker
       .toBe true
 
-  it 'should return `result` object', ->
+  it 'should return the value returned by the inner function', ->
     r = null
     runs ->
-      new WorkerAdapter ->
-        result.answer = 42
-      .run().then ({ result }) -> r = result
+      new WorkerAdapter(-> 42)
+        .run()
+        .then (result) -> r = result
     waitsFor 40, -> r
     runs ->
-      expect(r).toEqual answer: 42
+      expect(r).toBe 42
 
   it 'should pass arguments', ->
     r = null
     runs ->
-      new WorkerAdapter (x, y) ->
-        result.xplusy = x + y
-      .run(10, 20).then ({ result }) -> r = result
+      new WorkerAdapter((x, y) -> x + y)
+        .run(10, 20)
+        .then (result) -> r = result
     waitsFor 40, -> r
     runs ->
-      expect(r).toEqual xplusy: 30
+      expect(r).toBe 30
