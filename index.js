@@ -65,7 +65,9 @@
 
   if ('self' in this) {
     this.WorkerAdapter = WorkerAdapter;
-  } else {
+  }
+
+  if (typeof module !== "undefined" && module !== null) {
     module.exports = WorkerAdapter;
   }
 

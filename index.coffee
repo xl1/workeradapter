@@ -43,5 +43,4 @@ class WorkerAdapter
 
 if 'self' of @
   @WorkerAdapter = WorkerAdapter
-else
-  module.exports = WorkerAdapter
+module?.exports = WorkerAdapter
