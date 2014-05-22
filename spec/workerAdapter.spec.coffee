@@ -23,3 +23,19 @@ describe 'WorkerAdapter', ->
     waitsFor 40, -> r
     runs ->
       expect(r).toBe 30
+
+  it 'can run repeatedly', ->
+    r1 = r2 = r3 = null
+    runs ->
+      w = new WorkerAdapter (x) -> x * 2
+      w.run(3).then (result) ->
+        r1 = result
+        w.run(r1).then (result) ->
+          r2 = result
+      w.run(4).then (result) ->
+        r3 = result
+    waitsFor 40, -> r1 && r2 && r3
+    runs ->
+      expect(r1).toBe 6
+      expect(r2).toBe 12
+      expect(r3).toBe 8
